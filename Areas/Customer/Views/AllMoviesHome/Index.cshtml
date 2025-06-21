@@ -1,0 +1,66 @@
+﻿@model List<Movie>
+
+<div class="row mt-4">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-light shadow-sm border-0 rounded-4 h-100 overflow-hidden">
+                <!-- صورة الفيلم -->
+                <img src="~/Images/@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 250px; object-fit: cover;" />
+
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <h5 class="card-title text-danger fw-bold">@item.Name</h5>
+                    <div class="mt-3 text-end">
+                        <a href="/Customer/Details/Index/@item.Id" class="btn btn-sm btn-outline-info">
+                            🎬 See Movie
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    body {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+
+    /* الكروت العامة للأفلام */
+    .card {
+        background-color: #1c1c1c;
+        color: #e0e0e0;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 12px rgba(255, 60, 60, 0.3);
+        }
+
+    .card-title {
+        color: #ff5252;
+    }
+
+    /* زر مشاهدة الفيلم */
+    .btn-outline-info {
+        color: #29b6f6;
+        border-color: #29b6f6;
+    }
+
+        .btn-outline-info:hover {
+            background-color: #29b6f6;
+            color: #000;
+        }
+
+    .card-img-top {
+        border-bottom: 1px solid #333;
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover .card-img-top {
+        transform: scale(1.03);
+    }
+
+</style>

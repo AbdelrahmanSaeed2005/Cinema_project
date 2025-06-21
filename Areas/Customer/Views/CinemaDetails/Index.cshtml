@@ -1,0 +1,90 @@
+﻿@model Cinema
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="border p-3 rounded bg-light">
+                <h6 class="text-muted">Logo Info</h6>
+                <p>@Model.CinemaLogo</p>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h2>@Model.Name</h2>
+            <p><strong>Description:</strong> @Model.Description</p>
+            <p><strong>Location:</strong> @Model.Location</p>
+
+            <h4 class="mt-4">Movies in this cinema:</h4>
+            <ul class="list-group">
+                @foreach (var movie in Model.Movies)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        @movie.Name
+                        <a href="/Customer/Details/Index/@movie.Id" class="btn btn-sm btn-outline-info">🎬 View Movie</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+<style>
+    /* الخلفية العامة */
+    body {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+
+    /* صندوق اللوجو */
+    .bg-light {
+        background-color: #1e1e1e !important;
+        border: 1px solid #333;
+    }
+
+    .text-muted {
+        color: #aaaaaa !important;
+    }
+
+    /* عنوان السينما */
+    h2 {
+        color: #ff3c3c;
+    }
+
+    /* وصف وموقع */
+    p strong {
+        color: #ff8a80;
+    }
+
+    p {
+        color: #ccc;
+    }
+
+    /* عنوان أفلام السينما */
+    h4 {
+        color: #ff5252;
+        border-bottom: 1px solid #333;
+        padding-bottom: 6px;
+        margin-bottom: 12px;
+    }
+
+    /* قائمة الأفلام */
+    .list-group-item {
+        background-color: #1c1c1c;
+        border: 1px solid #333;
+        color: #e0e0e0;
+    }
+
+        .list-group-item:hover {
+            background-color: #2a2a2a;
+        }
+
+    /* زر عرض الفيلم */
+    .btn-outline-info {
+        color: #29b6f6;
+        border-color: #29b6f6;
+    }
+
+        .btn-outline-info:hover {
+            background-color: #29b6f6;
+            color: #000;
+        }
+
+</style>

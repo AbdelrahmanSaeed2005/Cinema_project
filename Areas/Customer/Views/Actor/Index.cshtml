@@ -1,0 +1,67 @@
+﻿@model Actor
+
+<div class="card bg-dark text-light shadow-sm border-0 rounded-4 p-3">
+    <div class="card-body">
+        <div class="d-flex align-items-center">
+            <!-- صورة الممثل -->
+            <img src="/Images/@Model.ProfilePictureUrl"
+                 alt="@Model.FirstName @Model.LastName"
+                 class="actor-img rounded-circle me-3" />
+
+            <!-- معلومات الممثل -->
+            <div>
+                <h4 class="text-danger fw-bold mb-1">@($"{Model.FirstName} {@Model.LastName}")</h4>
+                <p class="text-muted mb-2" style="max-width: 500px;">@Model.Bio</p>
+                <a href="#" class="btn btn-sm btn-outline-info" target="_blank">🔗 Social Media</a>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    body {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+
+    .container {
+        background-color: transparent;
+    }
+
+    .card {
+        background-color: #1c1c1c;
+        border-radius: 16px;
+        box-shadow: 0 0 12px rgba(255, 60, 60, 0.2);
+    }
+
+    .actor-img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid transparent;
+        background: linear-gradient(145deg, #ff5252, #ff8a65);
+        padding: 3px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .actor-img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 100, 100, 0.4);
+        }
+
+    .text-muted {
+        color: #bbb !important;
+    }
+
+    .btn-outline-info {
+        color: #29b6f6;
+        border-color: #29b6f6;
+    }
+
+        .btn-outline-info:hover {
+            background-color: #29b6f6;
+            color: #000;
+        }
+</style>
+
+

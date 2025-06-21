@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "Not Found";
+}
+
+<div class="text-center mt-5 p-5 bg-dark text-light rounded-4 shadow-lg" style="max-width: 600px; margin: auto;">
+    <h1 class="display-1 fw-bold text-danger" style="font-size: 8rem;">404</h1>
+    <h2 class="mb-3">Movie Not Found 🎬</h2>
+    <p class="text-secondary fs-5">Sorry, the movie you're looking for doesn't exist... or maybe it's just lost in the archives.</p>
+
+    <img src="https://cdn-icons-png.flaticon.com/512/2748/2748558.png" width="180" class="my-4" />
+
+    <div>
+        <a href="/Customer/Home" class="btn btn-outline-light px-4 py-2 me-2">🏠 Back to Home</a>
+        <a href="/Customer/Home?search=venom" class="btn btn-outline-warning px-4 py-2">🔎 Try Searching</a>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #121212;
+    }
+
+    .btn-outline-light:hover {
+        background-color: #fff;
+        color: #000;
+    }
+
+    .btn-outline-warning:hover {
+        background-color: #ffc107;
+        color: #000;
+    }
+</style>
+
+

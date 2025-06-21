@@ -1,0 +1,104 @@
+﻿@model List<Cinema>
+
+<div class="container mt-4">
+    <div class="row">
+        @foreach (var cinema in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm bg-dark text-light border-0 rounded-4 h-100">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <h5 class="card-title text-danger fw-bold">@cinema.Name</h5>
+                        <div class="mt-3 text-end">
+                            <a href="/Customer/CinemaDetails/Index/@cinema.Id" class="btn btn-outline-info btn-sm">
+                                🎬 See Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+</div>
+
+<style>
+    /* خلفية عامة */
+    body {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+
+    /* جدول غامق بالكامل */
+    .table {
+        background-color: #1a1a1a !important;
+        color: #f0f0f0;
+        border-collapse: collapse;
+        border: 1px solid #333;
+    }
+
+        /* ترويسة الجدول */
+        .table thead {
+            background-color: #2c2c2c !important;
+            color: #ff5252 !important;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-bottom: 2px solid #444;
+        }
+
+        /* الصفوف */
+        .table tbody tr {
+            background-color: #1e1e1e !important;
+            border-bottom: 1px solid #333;
+        }
+
+            .table tbody tr:hover {
+                background-color: #2a2a2a !important;
+            }
+
+        /* الخلايا */
+        .table td, .table th {
+            border: 1px solid #333 !important;
+            vertical-align: middle;
+        }
+
+    /* زر التفاصيل */
+    .btn-outline-primary {
+        color: #29b6f6;
+        border-color: #29b6f6;
+        transition: 0.3s ease;
+    }
+
+        .btn-outline-primary:hover {
+            background-color: #29b6f6;
+            color: #000;
+        }
+    /* كروت السينمات */
+    .card {
+        background-color: #1c1c1c;
+        color: #e0e0e0;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 12px rgba(255, 60, 60, 0.3);
+        }
+
+    .card-title {
+        color: #ff5252;
+        margin-bottom: 1rem;
+    }
+
+    /* زر التفاصيل */
+    .btn-outline-info {
+        color: #29b6f6;
+        border-color: #29b6f6;
+    }
+
+        .btn-outline-info:hover {
+            background-color: #29b6f6;
+            color: #000;
+        }
+
+
+</style>
