@@ -1,0 +1,86 @@
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@model CinemaHub.ViewModels.MovieFormVM
+
+<div class="container my-5 p-4 rounded-4 shadow-lg" style="background-color: #1c1c1c; color: #f0f0f0;">
+    <h2 class="mb-4 fw-bold text-center text-danger">
+        @(ViewContext.RouteData.Values["action"]?.ToString() == "Edit" ? "✏️ Edit Movie" : "➕ Add New Movie")
+    </h2>
+
+    <form asp-action="@ViewContext.RouteData.Values["action"]" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label fw-semibold"></label>
+            <input asp-for="Name" class="form-control bg-dark text-light border-secondary" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label fw-semibold"></label>
+            <textarea asp-for="Description" class="form-control bg-dark text-light border-secondary"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Price" class="form-label fw-semibold"></label>
+            <input asp-for="Price" class="form-control bg-dark text-light border-secondary" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="ImageUrl" class="form-label fw-semibold"></label>
+            <input asp-for="ImageUrl" class="form-control bg-dark text-light border-secondary" placeholder="مثلاً: movie5.png" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Actors</label>
+            <select asp-for="SelectedActorIds" asp-items="Model.Actors" class="form-select bg-dark text-light border-secondary" multiple></select>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="StartDate" class="form-label fw-semibold"></label>
+                <input asp-for="StartDate" type="date" class="form-control bg-dark text-light border-secondary" />
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="EndDate" class="form-label fw-semibold"></label>
+                <input asp-for="EndDate" type="date" class="form-control bg-dark text-light border-secondary" />
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="MovieStatus" class="form-label fw-semibold"></label>
+            <select asp-for="MovieStatus" class="form-select bg-dark text-light border-secondary" asp-items="Html.GetEnumSelectList<MovieStatus>()"></select>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="CategoryId" class="form-label fw-semibold"></label>
+            <select asp-for="CategoryId" class="form-select bg-dark text-light border-secondary" asp-items="Model.Categories"></select>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="CinemaId" class="form-label fw-semibold"></label>
+            <select asp-for="CinemaId" class="form-select bg-dark text-light border-secondary" asp-items="Model.Cinemas"></select>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-danger px-4 fw-bold">💾 Save</button>
+            <a href="/Admin/Movies" class="btn btn-outline-light px-4">↩️ Cancel</a>
+        </div>
+    </form>
+</div>
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        @if (TempData["success"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: '@TempData["success"]',
+                        confirmButtonColor: '#28a745'
+                    });
+            </text>
+        }
+    </script>
+}

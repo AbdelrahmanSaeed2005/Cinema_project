@@ -1,0 +1,117 @@
+﻿@model List<CinemaHub.Models.Cinema>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-info">Cinemas List</h2>
+        <a href="/Admin/brand/Create" class="btn btn-success">+ Add Cinema</a>
+    </div>
+
+    <table class="table table-dark table-hover border-secondary rounded-4 overflow-hidden">
+        <thead class="bg-dark text-warning">
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cinema in Model)
+            {
+                <tr>
+                    <td>@cinema.Name</td>
+                    <td>
+                        @{
+                            var words = cinema.Description?.Split(' ');
+                            var shortDesc = words?.Length > 8 ? string.Join(" ", words.Take(8)) + "..." : cinema.Description;
+                        }
+                        @shortDesc
+                    </td>
+                    <td>
+                        <a href="/Admin/brand/Edit/@cinema.Id" class="btn btn-sm btn-outline-warning me-1">Edit</a>
+                        <a href="#" class="btn btn-sm btn-outline-danger btn-delete" data-id="@cinema.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // SweetAlert success message
+        @if (TempData["success"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: '@TempData["success"]',
+                        confirmButtonColor: '#28a745'
+                    });
+            </text>
+        }
+
+        // SweetAlert delete confirmation
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const cinemaId = this.getAttribute('data-id');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This action cannot be undone!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `/Admin/brand/Delete/${cinemaId}`;
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+<style>
+    body {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+
+    .table {
+        background-color: #1e1e1e;
+        border: 1px solid #444;
+    }
+
+        .table th, .table td {
+            border: 1px solid #333;
+        }
+
+        .table thead {
+            background-color: #1c1c1c;
+            color: #ffb74d;
+        }
+
+    .btn-outline-warning:hover {
+        background-color: #ffca28;
+        color: #000;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #e53935;
+        color: #fff;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+</style>

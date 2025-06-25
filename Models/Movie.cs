@@ -13,7 +13,7 @@
        
         public MovieStatus MovieStatus
         {
-            
+
             get
             {
                 var now = DateTime.Now;
@@ -30,6 +30,6 @@
         public int CategoryId { get; set; }
         public Cinema Cinema { get; set; } = null!;
         public Category Category { get; set; } = null!;
-        public ICollection<Actor> Actors { get; } = new List<Actor>();
+        public ICollection<Actor> Actors { get; set; } = new List<Actor>();
     }
 }

@@ -1,0 +1,138 @@
+﻿@model List<CinemaHub.Models.Actor>
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-gradient fw-bold">🎭 Actors Management</h2>
+        <a href="/Admin/Actore/Create" class="btn btn-success fw-semibold shadow-sm">+ Add New Actor</a>
+    </div>
+
+    <div class="table-responsive rounded-4 shadow-lg overflow-hidden">
+        <table class="table table-dark table-hover align-middle mb-0">
+            <thead class="text-uppercase bg-gradient text-warning border-bottom border-secondary">
+                <tr>
+                    <th style="width: 80px;">Image</th>
+                    <th>Full Name</th>
+                    <th style="width: 40%;">Bio</th>
+                    <th style="width: 140px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var actor in Model)
+                {
+                    <tr>
+                        <td>
+                            <img src="/Images/@actor.ProfilePictureUrl" alt="@actor.FirstName" width="55" height="55" class="rounded-circle border border-danger-subtle shadow-sm" style="object-fit: cover;" />
+                        </td>
+                        <td class="fw-semibold">@actor.FirstName @actor.LastName</td>
+                        <td class="text-muted">@((actor.Bio?.Length ?? 0) > 100 ? actor.Bio.Substring(0, 100) + "..." : actor.Bio)</td>
+                        <td>
+                            <div class="d-flex">
+                                <a href="/Admin/Actore/Edit/@actor.Id" class="btn btn-sm btn-outline-warning me-2">Edit</a>
+                                @* <a href="/Admin/Actore/Delete/@actor.Id" class="btn btn-sm btn-outline-danger">Delete</a> *@
+                                <a href="#" class="btn btn-sm btn-outline-danger btn-delete" data-id="@actor.Id">Delete</a>
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+
+    .text-gradient {
+        background: linear-gradient(90deg, #ff5252, #ffb74d);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .table {
+        background-color: #1c1c1c;
+        border-collapse: separate;
+        border-spacing: 0;
+        border: 1px solid #333;
+    }
+
+        .table th, .table td {
+            vertical-align: middle;
+            border-color: #444 !important;
+        }
+
+        .table thead {
+            background-color: #2c2c2c;
+        }
+
+    .btn-outline-warning:hover {
+        background-color: #ffb74d;
+        color: #000;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #ff5252;
+        color: #000;
+    }
+
+    .btn-success {
+        background-color: #29b673;
+        border-color: #29b673;
+    }
+
+        .btn-success:hover {
+            background-color: #25a064;
+        }
+
+    .table-responsive {
+        background-color: #1a1a1a;
+        border-radius: 12px;
+    }
+
+    ::selection {
+        background-color: #ff5252;
+        color: #fff;
+    }
+</style>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Show success message if exists
+        @if (TempData["success"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: '@TempData["success"]',
+                        confirmButtonColor: '#28a745'
+                    });
+            </text>
+        }
+
+        // Delete confirmation
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const actorId = this.getAttribute('data-id');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `/Admin/Actore/Delete/${actorId}`;
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,51 @@
+﻿@model CinemaHub.Models.Category
+
+<div class="container mt-5 p-4 rounded-4 shadow" style="background-color: #1e1e1e; color: #e0e0e0; max-width: 600px;">
+    <h2 class="mb-4 fw-bold text-center text-warning">🛠️ Edit Category</h2>
+
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">Category Name</label>
+            <input asp-for="Name" class="form-control bg-dark text-light border-secondary shadow-sm" placeholder="Enter category name..." />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-warning px-4">💾 Update</button>
+            <a href="/Admin/Category" class="btn btn-outline-light">↩️ Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<style>
+    body {
+        background-color: #121212;
+    }
+
+    input:focus {
+        box-shadow: 0 0 5px #ffc107;
+        border-color: #ffc107;
+    }
+
+    .btn-warning {
+        background-color: #f0ad4e;
+        border: none;
+    }
+
+        .btn-warning:hover {
+            background-color: #ec971f;
+        }
+
+    .btn-outline-light:hover {
+        background-color: #f8f9fa;
+        color: #000;
+    }
+</style>

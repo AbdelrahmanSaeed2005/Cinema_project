@@ -34,5 +34,9 @@ namespace CinemaHub.Areas.Admin.Controllers
             };
             return View(vm);
         }
+        public IActionResult category()
+        {
+            return View();
+        }
     }
 }

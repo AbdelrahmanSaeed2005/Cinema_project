@@ -7,8 +7,10 @@ namespace CinemaHub.Areas.Customer.Controllers
     public class ActorController : Controller
     {
         private readonly ApplicationDbContext _context = new ApplicationDbContext();
+        //الايدي الي هنا جاي من الاندكس ديتاالس
         public IActionResult Index(int id)
-        {          
+        {
+            
             var actor = _context.Actors.FirstOrDefault(e => e.Id == id);
 
             if (actor is null)
