@@ -1,153 +1,119 @@
 ﻿@model Movie
 
-<div class="row">
-    <!-- الصور والفيديو -->
-    <div class="col-md-6">
-        <div class="border rounded shadow-sm overflow-hidden mb-4">
-            <img src="~/Images/@Model.ImageUrl" class="img-fluid rounded" alt="@Model.Name" style="object-fit: cover; width: 100%; height: auto;" />
+<div class="container my-5">
+    <div class="row align-items-start">
+        <!-- الصورة -->
+        <div class="col-md-6 mb-4">
+            <div class="border rounded shadow overflow-hidden">
+                <img src="~/Images/@Model.ImageUrl"
+                     alt="@Model.Name"
+                     class="img-fluid rounded"
+                     style="object-fit: cover; width: 100%; height: 100%;" />
+            </div>
         </div>
 
-        @if (Model.GalleryImage != null && Model.GalleryImage.Any())
-        {
-            <div id="galleryCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    @for (int i = 0; i < Model.GalleryImage.Count; i++)
-                    {
-                        <div class="carousel-item @(i == 0 ? "active" : "")">
-                            <img src="~/Images/@Model.GalleryImage[i].ImageUrl" class="d-block w-100 rounded" style="height: 300px; object-fit: cover;" />
-                        </div>
-                    }
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon"></span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon"></span>
-                </button>
-            </div>
-        }
+        <!-- التفاصيل -->
+        <div class="col-md-6">
+            <h2 class="text-danger mb-3 fw-bold">@Model.Name</h2>
+            <p class="text-muted">@Model.Description</p>
 
-        @if (!string.IsNullOrEmpty(Model.TrailerVideoUrl))
-        {
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item"><strong>🎟️ Price:</strong> <span class="text-success">@Model.Price.ToString("C")</span></li>
+                <li class="list-group-item"><strong>🏢 Cinema:</strong> @Model.Cinema.Name</li>
+                <li class="list-group-item"><strong>📅 Start Date:</strong> @Model.StartDate.ToShortDateString()</li>
+                <li class="list-group-item"><strong>📅 End Date:</strong> @Model.EndDate.ToShortDateString()</li>
+                <li class="list-group-item"><strong>📂 Category:</strong> @Model.Category.Name</li>
+                <li class="list-group-item">
+                    <strong>🎬 Status:</strong>
+                    <span class="badge rounded-pill
+                        @(Model.MovieStatus == MovieStatus.Available ? "bg-success" :
+                          Model.MovieStatus == MovieStatus.Upcoming ? "bg-warning text-dark" : "bg-danger")">
+                        @Model.MovieStatus
+                    </span>
+                </li>
+            </ul>
+
             <div class="mt-4">
-                <h5 class="fw-bold">🎞️ Trailer</h5>
-                <video src="@Model.TrailerVideoUrl" controls class="rounded w-100 shadow-sm" style="max-height: 300px; background: black;"></video>
+                <h5 class="fw-bold">👥 Actors:</h5>
+                <div class="d-flex flex-wrap gap-2">
+                    @foreach (var actor in Model.Actors)
+                    {
+                        <a href="/Customer/Actor/Index/@actor.Id">
+                            <img src="~/Images/@actor.ProfilePictureUrl"
+                                 class="rounded-circle"
+                                 style="width: 50px; height: 50px;" />
+                        </a>
+                    }
+                </div>
             </div>
-        }
-    </div>
 
-    <!-- التفاصيل -->
-    <div class="col-md-6">
-        <h2 class="text-primary mb-3">@Model.Name</h2>
-        <p class="text-muted">@Model.Description</p>
-
-        <ul class="list-group list-group-flush mb-3">
-            <li class="list-group-item"><strong>🎟️ Price:</strong> <span class="text-success">@Model.Price.ToString("C")</span></li>
-            <li class="list-group-item"><strong>🏢 Cinema:</strong> @Model.Cinema.Name</li>
-            <li class="list-group-item"><strong>📅 Start Date:</strong> @Model.StartDate.ToShortDateString()</li>
-            <li class="list-group-item"><strong>📅 End Date:</strong> @Model.EndDate.ToShortDateString()</li>
-            <li class="list-group-item"><strong>📂 Category:</strong> @Model.Category.Name</li>
-            <li class="list-group-item">
-                <strong>🎬 Status:</strong>
-                <span class="badge rounded-pill
-                    @(Model.MovieStatus == MovieStatus.Available ? "bg-success" :
-                        Model.MovieStatus == MovieStatus.Upcoming ? "bg-warning text-dark" : "bg-danger")">
-                    @Model.MovieStatus
-                </span>
-            </li>
-        </ul>
-
-        <div class="mt-4">
-            <h5 class="fw-bold">Actors:</h5>
-            <div class="d-flex flex-wrap gap-2">
-                @foreach (var actor in Model.Actors)
-                {
-                    <a href="/Customer/Actor/Index/@actor.Id">
-                        <img src="~/Images/@actor.ProfilePictureUrl" class="rounded-circle" style="width: 50px; height: 50px;" />
-                    </a>
-                }
+            <div class="mt-4 text-center">
+                <a href="#" class="btn px-5 py-2 fw-bold
+                   @(Model.MovieStatus == MovieStatus.Expired ? "btn-secondary disabled" : "btn-success")">
+                    Book Ticket
+                </a>
             </div>
         </div>
-        
+    </div>
 
-        <div class="mt-4 text-center">
-            <a href="#" class="btn px-5 py-2 fw-bold
-                @(Model.MovieStatus == MovieStatus.Expired ? "btn-secondary disabled" : "btn-success")">
-                Book Ticket
-            </a>
+    <!-- الفاصل -->
+    <hr class="my-5 border-danger">
+
+    <!-- الجاليري والفيديو -->
+    <div class="row g-4">
+        <!-- الجاليري -->
+        <div class="col-md-6">
+            <h4 class="text-danger fw-bold mb-3">📸 Movie Gallery</h4>
+            @if (Model.GalleryImage != null && Model.GalleryImage.Any())
+            {
+                <div id="galleryCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @for (int i = 0; i < Model.GalleryImage.Count; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@Url.Content("~/Images/" + Model.GalleryImage[i].ImageUrl)"
+                                     class="d-block w-100 rounded"
+                                     alt="Gallery Image @(i + 1)"
+                                     style="height: 300px; object-fit: cover;" />
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No gallery images available.</p>
+            }
+        </div>
+
+        <!-- الفيديو -->
+        <div class="col-md-6">
+            <h4 class="text-danger fw-bold mb-3">🎬 Movie Trailer</h4>
+            @if (!string.IsNullOrEmpty(Model.TrailerVideoUrl))
+            {
+                <video src="@Model.TrailerVideoUrl"
+                       controls
+                       class="w-100 rounded shadow-sm"
+                       style="max-height: 300px; background: black;"></video>
+            }
+            else
+            {
+                <p class="text-muted">No trailer video available.</p>
+            }
         </div>
     </div>
 </div>
-
-
-<div class="container">
-    <div class="row">
-        @if (Model.GalleryImage != null && Model.GalleryImage.Any())
-        {
-            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-indicators">
-                    @for (int i = 0; i < Model.GalleryImage.Count; i++)
-                    {
-                        <button type="button"
-                                data-bs-target="#carouselExampleIndicators"
-                                data-bs-slide-to="@i"
-                                class="@(i == 0 ? "active" : "")"
-                                aria-current="@(i == 0 ? "true" : "false")"
-                                aria-label="Slide @(i + 1)">
-                        </button>
-                    }
-                </div>
-
-                <div class="carousel-inner">
-                    @for (int i = 0; i < Model.GalleryImage.Count; i++)
-                    {
-                        <div class="carousel-item @(i == 0 ? "active" : "")">
-                            <img src="~/Images/@Model.GalleryImage[i].ImageUrl"
-                                 class="d-block w-100 rounded"
-                                 alt="Gallery Image @(i + 1)"
-                                 style="height: 400px; object-fit: cover;" />
-                        </div>
-                    }
-                </div>
-
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
-           
-        }
-        else
-        {
-            <p class="text-muted text-center">No gallery images available.</p>
-        }
-    </div>
-</div>
-
 
 <style>
     body {
         background-color: #121212;
         color: #e0e0e0;
-    }
-
-    .img-fluid {
-        border: 4px solid #2a2a2a;
-        background-color: #000;
-    }
-
-    h2.text-primary {
-        color: #ff5252 !important;
-    }
-
-    .text-muted {
-        color: #aaa !important;
-        font-style: italic;
     }
 
     .list-group-item {

@@ -30,7 +30,7 @@
             <input type="file" name="img" asp-for="ImageUrl" class="form-control bg-dark text-light border-secondary" placeholder="مثلاً: movie5.png" />
         </div>
         <div class="mb-3">
-            <label class="form-label fw-semibold">Gallery Images</label>
+            <label asp-for="GalleryImage" class="form-label fw-semibold">Gallery Images</label>
             <input type="file" name="GalleryImage" multiple class="form-control bg-dark text-light border-secondary" />
         </div>
 
@@ -56,10 +56,10 @@
             </div>
         </div>
 
-        <div class="mb-3">
-            <label asp-for="MovieStatus" class="form-label fw-semibold"></label>
-            <select asp-for="MovieStatus" class="form-select bg-dark text-light border-secondary" asp-items="Html.GetEnumSelectList<MovieStatus>()"></select>
-        </div>
+        @* <div class="mb-3"> *@
+        @*     <label asp-for="MovieStatus" class="form-label fw-semibold"></label> *@
+        @*     <select asp-for="MovieStatus" class="form-select bg-dark text-light border-secondary" asp-items="Html.GetEnumSelectList<MovieStatus>()"></select> *@
+        @* </div> *@
 
         <div class="mb-3">
             <label asp-for="CategoryId" class="form-label fw-semibold"></label>

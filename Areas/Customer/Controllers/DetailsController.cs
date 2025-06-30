@@ -10,7 +10,7 @@ namespace CinemaHub.Areas.Customer.Controllers
         private readonly ApplicationDbContext _context = new ApplicationDbContext();
         public IActionResult Index(int id)
         {
-            var movie = _context.Movies.Include(e => e.Category).Include(m => m.GalleryImages).Where(e => e.CategoryId == e.Category.Id).Include(e => e.Cinema)
+            var movie = _context.Movies.Include(e => e.Category).Include(m => m.GalleryImage).Where(e => e.CategoryId == e.Category.Id).Include(e => e.Cinema)
                 .Include(e => e.Actors).FirstOrDefault(e => e.Id == id);
 
             if (movie is null)
