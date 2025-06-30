@@ -8,6 +8,12 @@
         public decimal Price { get; set; }
         public string ImageUrl { get; set; } = string.Empty;
         public string TrailerUrl { get; set; } = string.Empty;
+        // 🆕 صور إضافية
+        public List<MovieImage> GalleryImage { get; set; } = new();
+
+        // 🆕 فيديو
+        public string? TrailerVideoUrl { get; set; }
+
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
        
@@ -31,5 +37,7 @@
         public Cinema Cinema { get; set; } = null!;
         public Category Category { get; set; } = null!;
         public ICollection<Actor> Actors { get; set; } = new List<Actor>();
+        public ICollection<MovieImage> GalleryImages { get; set; } = new List<MovieImage>();
+
     }
 }

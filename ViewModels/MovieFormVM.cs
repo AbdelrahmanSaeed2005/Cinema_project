@@ -22,6 +22,12 @@ namespace CinemaHub.ViewModels
      
         public List<int> SelectedActorIds { get; set; } = new();
         public IEnumerable<SelectListItem> Actors { get; set; } = Enumerable.Empty<SelectListItem>();
+        //  الصور الإضافية
+
+        public List<IFormFile>? GalleryImage { get; set; }
+
+        //  الفيديو
+        public IFormFile? TrailerVideo { get; set; }
 
     }
 }

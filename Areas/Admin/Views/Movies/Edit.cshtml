@@ -5,7 +5,7 @@
         @(ViewContext.RouteData.Values["action"]?.ToString() == "Edit" ? "Edit Movie 🎬" : "Add New Movie 🎬")
     </h2>
 
-    <form asp-action="@ViewContext.RouteData.Values["action"]" method="post">
+    <form asp-action="@ViewContext.RouteData.Values["action"]" method="post" enctype="multipart/form-data">
         <input type="hidden" asp-for="Id" />
 
         <div class="mb-3">
@@ -25,8 +25,18 @@
 
         <div class="mb-3">
             <label asp-for="ImageUrl" class="form-label fw-semibold"></label>
-            <input asp-for="ImageUrl" class="form-control bg-dark text-light border-secondary" placeholder="e.g. movie1.png" />
+            <input type="file" name="img1" asp-for="ImageUrl" class="form-control bg-dark text-light border-secondary" placeholder="e.g. movie1.png" />
         </div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Gallery Images</label>
+            <input type="file" name="GalleryImages" multiple class="form-control bg-dark text-light border-secondary" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Trailer Video</label>
+            <input type="file" name="TrailerVideo" class="form-control bg-dark text-light border-secondary" accept="video/*" />
+        </div>
+
         <div class="mb-3">
             <label class="form-label fw-semibold">Actors</label>
             <select asp-for="SelectedActorIds" asp-items="Model.Actors" class="form-select bg-dark text-light border-secondary" multiple></select>

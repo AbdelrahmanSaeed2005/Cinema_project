@@ -25,8 +25,22 @@ namespace CinemaHub.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Actor actor)
+        public async Task<IActionResult> Create(Actor actor , IFormFile img)
         {
+            if (img is not null && img.Length > 0)
+            {
+                //دي بتكون اسسم الصوره 
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(img.FileName);
+                //دي بتوديني ل wwwrot 
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Images", fileName);
+                using (var strem = System.IO.File.Create(filePath))
+                {
+                    await img.CopyToAsync(strem);
+                }
+                //save img in database
+                actor.ProfilePictureUrl = fileName;
+
+            }
             if (!ModelState.IsValid)
                 return View(actor);
 
@@ -45,8 +59,22 @@ namespace CinemaHub.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Actor actor)
+        public async Task<IActionResult> Edit(Actor actor , IFormFile img)
         {
+            if (img is not null && img.Length > 0)
+            {
+                //دي بتكون اسسم الصوره 
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(img.FileName);
+                //دي بتوديني ل wwwrot 
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Images", fileName);
+                using (var strem = System.IO.File.Create(filePath))
+                {
+                    await img.CopyToAsync(strem);
+                }
+                //save img in database
+                actor.ProfilePictureUrl = fileName;
+
+            }
             if (!ModelState.IsValid)
                 return View(actor);
 

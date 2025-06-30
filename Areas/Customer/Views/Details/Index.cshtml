@@ -1,13 +1,43 @@
 ﻿@model Movie
 
 <div class="row">
-    <div class="col-md-4">
-        <div class="border rounded shadow-sm overflow-hidden">
-            <img src="~/Images/@Model.ImageUrl" class="img-fluid rounded" alt="@Model.Name" style="object-fit: cover; height: 100%;" />
+    <!-- الصور والفيديو -->
+    <div class="col-md-6">
+        <div class="border rounded shadow-sm overflow-hidden mb-4">
+            <img src="~/Images/@Model.ImageUrl" class="img-fluid rounded" alt="@Model.Name" style="object-fit: cover; width: 100%; height: auto;" />
         </div>
+
+        @if (Model.GalleryImage != null && Model.GalleryImage.Any())
+        {
+            <div id="galleryCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @for (int i = 0; i < Model.GalleryImage.Count; i++)
+                    {
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <img src="~/Images/@Model.GalleryImage[i].ImageUrl" class="d-block w-100 rounded" style="height: 300px; object-fit: cover;" />
+                        </div>
+                    }
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.TrailerVideoUrl))
+        {
+            <div class="mt-4">
+                <h5 class="fw-bold">🎞️ Trailer</h5>
+                <video src="@Model.TrailerVideoUrl" controls class="rounded w-100 shadow-sm" style="max-height: 300px; background: black;"></video>
+            </div>
+        }
     </div>
 
-    <div class="col-md-8">
+    <!-- التفاصيل -->
+    <div class="col-md-6">
         <h2 class="text-primary mb-3">@Model.Name</h2>
         <p class="text-muted">@Model.Description</p>
 
@@ -21,8 +51,7 @@
                 <strong>🎬 Status:</strong>
                 <span class="badge rounded-pill
                     @(Model.MovieStatus == MovieStatus.Available ? "bg-success" :
-                                            Model.MovieStatus == MovieStatus.Upcoming ? "bg-warning text-dark" :
-                                            "bg-danger")">
+                        Model.MovieStatus == MovieStatus.Upcoming ? "bg-warning text-dark" : "bg-danger")">
                     @Model.MovieStatus
                 </span>
             </li>
@@ -39,14 +68,7 @@
                 }
             </div>
         </div>
-
-        @if (!string.IsNullOrEmpty(Model.TrailerUrl))
-        {
-            <div class="mt-4">
-                <h5 class="fw-bold">🎞️ Trailer</h5>
-                <video src="@Model.TrailerUrl" controls class="rounded w-100 shadow-sm" style="max-width: 600px;"></video>
-            </div>
-        }
+        
 
         <div class="mt-4 text-center">
             <a href="#" class="btn px-5 py-2 fw-bold
@@ -56,31 +78,78 @@
         </div>
     </div>
 </div>
+
+
+<div class="container">
+    <div class="row">
+        @if (Model.GalleryImage != null && Model.GalleryImage.Any())
+        {
+            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    @for (int i = 0; i < Model.GalleryImage.Count; i++)
+                    {
+                        <button type="button"
+                                data-bs-target="#carouselExampleIndicators"
+                                data-bs-slide-to="@i"
+                                class="@(i == 0 ? "active" : "")"
+                                aria-current="@(i == 0 ? "true" : "false")"
+                                aria-label="Slide @(i + 1)">
+                        </button>
+                    }
+                </div>
+
+                <div class="carousel-inner">
+                    @for (int i = 0; i < Model.GalleryImage.Count; i++)
+                    {
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <img src="~/Images/@Model.GalleryImage[i].ImageUrl"
+                                 class="d-block w-100 rounded"
+                                 alt="Gallery Image @(i + 1)"
+                                 style="height: 400px; object-fit: cover;" />
+                        </div>
+                    }
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+           
+        }
+        else
+        {
+            <p class="text-muted text-center">No gallery images available.</p>
+        }
+    </div>
+</div>
+
+
 <style>
-    /* خلفية الصفحة */
     body {
         background-color: #121212;
         color: #e0e0e0;
     }
 
-    /* صورة الفيلم */
     .img-fluid {
         border: 4px solid #2a2a2a;
         background-color: #000;
     }
 
-    /* اسم الفيلم */
     h2.text-primary {
         color: #ff5252 !important;
     }
 
-    /* الوصف */
     .text-muted {
         color: #aaa !important;
         font-style: italic;
     }
 
-    /* عناصر التفاصيل */
     .list-group-item {
         background-color: #1e1e1e;
         color: #e0e0e0;
@@ -91,7 +160,6 @@
             color: #ff8a80;
         }
 
-    /* البادجات للحالة */
     .badge.bg-success {
         background-color: #43a047 !important;
     }
@@ -105,7 +173,6 @@
         background-color: #c62828 !important;
     }
 
-    /* صور الممثلين */
     .rounded-circle {
         border: 2px solid #555;
         transition: transform 0.3s ease;
@@ -116,13 +183,11 @@
             box-shadow: 0 0 8px rgba(255, 60, 60, 0.5);
         }
 
-    /* التريلر */
     video {
         background-color: #000;
         border: 2px solid #333;
     }
 
-    /* زر الحجز */
     .btn-success {
         background-color: #e53935;
         border: none;
@@ -137,5 +202,4 @@
         color: #999 !important;
         border: none;
     }
-
 </style>

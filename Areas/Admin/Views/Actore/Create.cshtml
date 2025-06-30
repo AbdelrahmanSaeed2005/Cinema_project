@@ -3,7 +3,7 @@
 <div class="container my-5 p-4 rounded-4 shadow-lg" style="background-color: #1c1c1c; color: #f0f0f0;">
     <h2 class="mb-4 fw-bold text-center text-success">➕ Add New Actor</h2>
 
-    <form asp-action="Create" method="post">
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
         <div class="mb-3">
             <label asp-for="FirstName" class="form-label fw-semibold"></label>
             <input asp-for="FirstName" class="form-control bg-dark text-light border-secondary" />
@@ -18,7 +18,7 @@
 
         <div class="mb-3">
             <label asp-for="ProfilePictureUrl" class="form-label fw-semibold"></label>
-            <input asp-for="ProfilePictureUrl" class="form-control bg-dark text-light border-secondary" />
+            <input type="file" name="img" asp-for="ProfilePictureUrl" class="form-control bg-dark text-light border-secondary" />
             <span asp-validation-for="ProfilePictureUrl" class="text-danger"></span>
         </div>
 

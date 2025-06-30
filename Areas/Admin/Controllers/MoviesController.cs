@@ -11,34 +11,26 @@ namespace CinemaHub.Areas.Admin.Controllers
     public class MoviesController : Controller
     {
         private readonly ApplicationDbContext _context = new ApplicationDbContext();
-       
-        //GET: Admin/Movies
+
         public IActionResult Index()
         {
-            var movies = _context.Movies.Include(e => e.Category).Include(e => e.Cinema).ToList();
+            var movies = _context.Movies.Include(m => m.Category).Include(m => m.Cinema).ToList();
             return View(movies);
         }
-        //GET: Admin/Movies/Create
+
         public IActionResult Create()
         {
             var vm = new MovieFormVM
             {
                 Categories = _context.Categories.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }),
                 Cinemas = _context.Cinemas.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }),
-                //Actors = _context.Actors.Select(a => new SelectListItem { Value = a.Id.ToString(), Text = a.LastName}) // ✅
-                Actors = _context.Actors.Select(a => new SelectListItem
-                {
-                    Value = a.Id.ToString(),
-                    Text = $"{a.FirstName} {a.LastName}"
-                })
-
+                Actors = _context.Actors.Select(a => new SelectListItem { Value = a.Id.ToString(), Text = $"{a.FirstName} {a.LastName}" })
             };
             return View(vm);
         }
 
-        // POST: Admin/Movies/Create
         [HttpPost]
-        public IActionResult Create(MovieFormVM vm)
+        public async Task<IActionResult> Create(MovieFormVM vm, IFormFile img)
         {
             if (!ModelState.IsValid)
             {
@@ -46,6 +38,18 @@ namespace CinemaHub.Areas.Admin.Controllers
                 vm.Cinemas = _context.Cinemas.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name });
                 vm.Actors = _context.Actors.Select(a => new SelectListItem { Value = a.Id.ToString(), Text = $"{a.FirstName} {a.LastName}" });
                 return View(vm);
+            }
+
+            // ✅ حفظ صورة رئيسية
+            if (img != null && img.Length > 0)
+            {
+                var fileName = Guid.NewGuid() + Path.GetExtension(img.FileName);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Images", fileName);
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    await img.CopyToAsync(stream);
+                }
+                vm.ImageUrl = fileName;
             }
 
             var movie = new Movie
@@ -58,26 +62,58 @@ namespace CinemaHub.Areas.Admin.Controllers
                 EndDate = vm.EndDate,
                 //MovieStatus = vm.MovieStatus,
                 CategoryId = vm.CategoryId,
-                CinemaId = vm.CinemaId
+                CinemaId = vm.CinemaId,
+                Actors = _context.Actors.Where(a => vm.SelectedActorIds.Contains(a.Id)).ToList()
             };
 
-            // ✅ ربط الممثلين بالفيلم
-            movie.Actors = _context.Actors
-                .Where(a => vm.SelectedActorIds.Contains(a.Id))
-                .ToList();
-
             _context.Movies.Add(movie);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync(); // علشان ناخد الـ movie.Id
+
+            // ✅ حفظ الصور المتعددة
+            if (vm.GalleryImage != null && vm.GalleryImage.Any())
+            {
+                foreach (var galleryImage in vm.GalleryImage)
+                {
+                    var fileName = Guid.NewGuid() + Path.GetExtension(galleryImage.FileName);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Images", fileName);
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        await galleryImage.CopyToAsync(stream);
+                    }
+
+                    var movieImage = new MovieImage
+                    {
+                        ImageUrl = fileName,
+                        MovieId = movie.Id
+                    };
+                    _context.MaovieImages.Add(movieImage);
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            // ✅ حفظ الفيديو
+            if (vm.TrailerVideo != null)
+            {
+                var videoName = Guid.NewGuid() + Path.GetExtension(vm.TrailerVideo.FileName);
+                var videoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Videos", videoName);
+                using (var stream = System.IO.File.Create(videoPath))
+                {
+                    await vm.TrailerVideo.CopyToAsync(stream);
+                }
+
+                movie.TrailerVideoUrl = "/Videos/" + videoName;
+                await _context.SaveChangesAsync();
+            }
+
             TempData["success"] = "Movie has been added successfully!";
             return RedirectToAction("Index");
         }
 
-
-        // GET: Admin/Movies/Edit/5
         public IActionResult Edit(int id)
         {
             var movie = _context.Movies
-                .Include(m => m.Actors) // ✅ لازم Include علشان تجيب العلاقة مع الممثلين
+                .Include(m => m.Actors)
+                .Include(m => m.GalleryImage) // جلب الصور الإضافية
                 .FirstOrDefault(m => m.Id == id);
 
             if (movie == null) return NotFound();
@@ -94,67 +130,90 @@ namespace CinemaHub.Areas.Admin.Controllers
                 MovieStatus = movie.MovieStatus,
                 CategoryId = movie.CategoryId,
                 CinemaId = movie.CinemaId,
-
-                Categories = _context.Categories.Select(c => new SelectListItem
-                {
-                    Value = c.Id.ToString(),
-                    Text = c.Name
-                }),
-
-                Cinemas = _context.Cinemas.Select(c => new SelectListItem
-                {
-                    Value = c.Id.ToString(),
-                    Text = c.Name
-                }),
-
-                // ✅ دي الإضافة المهمة عشان نعرض الممثلين المختارين في الـ Edit
                 SelectedActorIds = movie.Actors.Select(a => a.Id).ToList(),
-                Actors = _context.Actors.Select(a => new SelectListItem
-                {
-                    Value = a.Id.ToString(),
-                    Text = $"{a.FirstName} {a.LastName}"
-                })
+
+                Categories = _context.Categories.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }),
+                Cinemas = _context.Cinemas.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }),
+                Actors = _context.Actors.Select(a => new SelectListItem { Value = a.Id.ToString(), Text = $"{a.FirstName} {a.LastName}" })
             };
 
             return View(vm);
         }
 
-
-        // POST: Admin/Movies/Edit
         [HttpPost]
-        
-        public IActionResult Edit(MovieFormVM vm)
+        public async Task<IActionResult> Edit(MovieFormVM vm, IFormFile img1)
         {
             var movie = _context.Movies
-                .Include(m => m.Actors) // ✅ لازم عشان تقدر تتحكم في العلاقة
+                .Include(m => m.Actors)
                 .FirstOrDefault(m => m.Id == vm.Id);
 
             if (movie == null) return NotFound();
 
-            // تحديث بيانات الفيلم
+            // ✅ تحديث الصورة الرئيسية
+            if (img1 != null && img1.Length > 0)
+            {
+                var fileName = Guid.NewGuid() + Path.GetExtension(img1.FileName);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Images", fileName);
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    await img1.CopyToAsync(stream);
+                }
+                movie.ImageUrl = fileName;
+            }
+
+            // تحديث باقي بيانات الفيلم
             movie.Name = vm.Name;
             movie.Description = vm.Description;
             movie.Price = (decimal)vm.Price;
-            movie.ImageUrl = vm.ImageUrl;
             movie.StartDate = vm.StartDate;
             movie.EndDate = vm.EndDate;
             //movie.MovieStatus = vm.MovieStatus;
             movie.CategoryId = vm.CategoryId;
             movie.CinemaId = vm.CinemaId;
 
-            // ✅ تحديث الممثلين المرتبطين
-            movie.Actors.Clear(); // حذف الموجودين
-            movie.Actors = _context.Actors
-                .Where(a => vm.SelectedActorIds.Contains(a.Id))
-                .ToList();
+            // ✅ تحديث الممثلين
+            movie.Actors.Clear();
+            movie.Actors = _context.Actors.Where(a => vm.SelectedActorIds.Contains(a.Id)).ToList();
 
-            _context.SaveChanges();
+            // ✅ إضافة صور جديدة
+            if (vm.GalleryImage != null && vm.GalleryImage.Any())
+            {
+                foreach (var img in vm.GalleryImage)
+                {
+                    var fileName = Guid.NewGuid() + Path.GetExtension(img.FileName);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Images", fileName);
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        await img.CopyToAsync(stream);
+                    }
+
+                    var movieImage = new MovieImage
+                    {
+                        ImageUrl = fileName,
+                        MovieId = movie.Id
+                    };
+                    _context.MaovieImages.Add(movieImage);
+                }
+            }
+
+            // ✅ حفظ الفيديو الجديد إن وجد
+            if (vm.TrailerVideo != null)
+            {
+                var videoName = Guid.NewGuid() + Path.GetExtension(vm.TrailerVideo.FileName);
+                var videoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Videos", videoName);
+                using (var stream = System.IO.File.Create(videoPath))
+                {
+                    await vm.TrailerVideo.CopyToAsync(stream);
+                }
+
+                movie.TrailerVideoUrl = "/Videos/" + videoName;
+            }
+
+            await _context.SaveChangesAsync();
             TempData["success"] = "Movie has been updated successfully!";
             return RedirectToAction("Index");
         }
 
-
-        // GET: Admin/Movies/Delete/5
         public IActionResult Delete(int id)
         {
             var movie = _context.Movies.Find(id);
